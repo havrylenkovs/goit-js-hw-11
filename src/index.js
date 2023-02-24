@@ -1,6 +1,4 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-// import SimpleLightbox from 'simplelightbox';
-// import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchImages } from './fetchImages.js';
 import { createMarkup } from './createMarkup.js';
 import LoadMoreBtn from './LoadMoreBtn.js';
@@ -13,7 +11,7 @@ const searchBtn = document.querySelector('.btn-search');
 const gallery = document.querySelector('.gallery');
 const input = document.querySelector('.input');
 
-const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more' }); // инициализация экземпляра Класса
+const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more' });
 
 form.addEventListener('submit', onSubmitImages);
 loadMoreBtn.button.addEventListener('click', onClickBtnLoadMore);
@@ -23,7 +21,7 @@ new SimpleLightbox('.gallery a');
 
 function onSubmitImages(evt) {
   evt.preventDefault();
-  loadMoreBtn.hide(); // Сначала прячем кнопку, что бы она при повторном сабмите не отображалась
+  loadMoreBtn.hide();
   pageNumber = 1;
   perPage = 40;
   imgQuery = evt.target.elements.searchQuery.value;
