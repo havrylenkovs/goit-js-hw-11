@@ -1,4 +1,6 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchImages } from './fetchImages.js';
 import { createMarkup } from './createMarkup.js';
 import LoadMoreBtn from './LoadMoreBtn.js';
@@ -17,18 +19,18 @@ form.addEventListener('submit', onSubmitImages);
 loadMoreBtn.button.addEventListener('click', onClickBtnLoadMore);
 input.addEventListener('input', onCleanInput);
 
-new SimpleLightbox('.gallery a');
+const activeSimplelightbox = new SimpleLightbox('.gallery a');
 
 function onSubmitImages(evt) {
   evt.preventDefault();
   loadMoreBtn.hide();
   pageNumber = 1;
   perPage = 40;
-  imgQuery = evt.target.elements.searchQuery.value;
+  imgQuery = evt.target.elements.searchQuery.value.trim();
   cleanMarkup();
   fetchImages(imgQuery, pageNumber).then(data => {
     const totalImg = data.data.totalHits;
-
+    loadMoreBtn.enabled();
     const {
       data: { hits },
     } = data;
@@ -40,12 +42,14 @@ function onSubmitImages(evt) {
       );
       return;
     }
-    createMarkup(hits);
-    loadMoreBtn.show();
+    gallery.innerHTML = createMarkup(hits);
 
-    if (totalImg < perPage)
+    loadMoreBtn.show();
+    activeSimplelightbox.refresh();
+    if (totalImg < perPage) {
       Notify.info(`We're sorry, but you've reached the end of search result`);
-    else Notify.success(`Hooray! We found ${totalImg} images.`);
+      loadMoreBtn.disabled();
+    } else Notify.success(`Hooray! We found ${totalImg} images.`);
   });
 }
 
@@ -53,16 +57,17 @@ function onClickBtnLoadMore(evt) {
   evt.preventDefault();
   pageNumber += 1;
   perPage += 40;
-  console.log('onClickBtnLoadMore ~ perPage:', perPage);
-
   let number = fetchImages(imgQuery, pageNumber).then(data => {
     const {
       data: { hits },
     } = data;
     if (data.data.totalHits < perPage) {
       Notify.info(`We're sorry, but you've reached the end of search results.`);
+      loadMoreBtn.disabled();
     }
-    createMarkup(hits);
+    gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
+    activeSimplelightbox.refresh();
+    updateScroll();
   });
 }
 
@@ -76,4 +81,15 @@ function onCleanInput(e) {
 
 function cleanMarkup() {
   gallery.innerHTML = '';
+}
+
+function updateScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.photo-card')
+    .getBoundingClientRect();
+
+  return window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }

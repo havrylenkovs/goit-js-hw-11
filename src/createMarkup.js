@@ -1,12 +1,10 @@
-const gallery = document.querySelector('.gallery');
-
 function createMarkup(arr) {
-  const markup = arr
+  return arr
     .map(img => {
       return ` 
        <div class="photo-card">
         <a class="link-img" href="${img.largeImageURL}">
-        <img  class="gallery_image" src="${img.webformatURL}" alt="${img.tags}" loading="lazy" />
+     <img  class="gallery_image" src="${img.webformatURL}" alt="${img.tags}"  />
         </a>
         <div class="info">
           <p class="info-item">
@@ -25,13 +23,9 @@ function createMarkup(arr) {
             <b>Downloads</b>
             ${img.downloads}
           </p>
+          </div>
           </div>`;
     })
     .join('');
-
-  gallery.insertAdjacentHTML('beforeend', markup);
 }
-
-//
-
 export { createMarkup };
