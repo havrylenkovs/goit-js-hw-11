@@ -1,0 +1,94 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+
+  padding-top: 10px;
+  padding-bottom: 15px;
+  background-color: #8abdba;
+}
+.form-wraper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 300px;
+  height: 40px;
+  outline: none;
+  outline: 0;
+  border: 0;
+  &:focus {
+    border: 1px solid #6eb5b1;
+  }
+}
+
+.btn-search {
+  border: 0;
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  background-image: url('https://png.pngtree.com/png-vector/20210307/ourlarge/pngtree-magnifying-glass-vector-design-png-image_3014771.jpg');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    border: 1px solid #6eb5b1;
+  }
+}
+
+.gallery {
+  //   display: flex;
+
+  flex-wrap: wrap;
+  gap: 40px;
+
+  margin-top: 100px;
+}
+
+.photo-card {
+  margin: 0;
+  width: 320px;
+  height: 100%;
+}
+
+.gallery_image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.load-more {
+  display: block;
+  margin: 80px auto 40px;
+
+  padding: 10px 15px;
+  background-color: #6eb5b1;
+  border-radius: 15%;
+  border: none;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: #8abdba;
+  }
+}
+.hidden {
+  display: none;
+}
