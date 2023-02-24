@@ -13,7 +13,7 @@ const searchBtn = document.querySelector('.btn-search');
 const gallery = document.querySelector('.gallery');
 const input = document.querySelector('.input');
 
-const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more' });
+const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more' }); // инициализация экземпляра Класса
 
 form.addEventListener('submit', onSubmitImages);
 loadMoreBtn.button.addEventListener('click', onClickBtnLoadMore);
@@ -23,7 +23,7 @@ const activeSimplelightbox = new SimpleLightbox('.gallery a');
 
 function onSubmitImages(evt) {
   evt.preventDefault();
-  loadMoreBtn.hide();
+  loadMoreBtn.hide(); // Сначала прячем кнопку, что бы она при повторном сабмите не отображалась
   pageNumber = 1;
   perPage = 40;
   imgQuery = evt.target.elements.searchQuery.value.trim();
