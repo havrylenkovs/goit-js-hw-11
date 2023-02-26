@@ -12,6 +12,22 @@ let lightbox = new SimpleLightbox('.gallery a', {
   captionType: 'alt',
   widthRatio: 0.8,
   heightRatio: 0.9,
+  disableScroll: true,
+  alertError: true,
+  alertErrorMessage: 'Image not found, next image will be loaded',
+  history: true,
+  throttleInterval: 0,
+  doubleTapZoom: 2,
+  maxZoom: 10,
+  htmlClass: 'has-lightbox',
+  rtl: false,
+  fixedClass: 'sl-fixed',
+  fadeSpeed: 300,
+  uniqueImages: true,
+  focus: true,
+  scrollZoom: true,
+  scrollZoomFactor: 0.5,
+  download: false,
 });
 
 refs.formEl.addEventListener('submit', onFormSubmit);
