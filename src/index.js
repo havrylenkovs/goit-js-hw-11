@@ -52,7 +52,8 @@ async function processingReceivedImg() {
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-      return;
+      refs.loadMoreBtn.classList.add('is-hidden');
+      refs.endCollectionText.classList.add('is-hidden');
     }
 
     appendToGallery(hits);
