@@ -1,32 +1,38 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Page title</title>
-    <link rel="stylesheet" href="./sass/index.scss" />
+    <title>HM 11 alternative</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.0.0/modern-normalize.min.css"
+      integrity="sha512-ISS7cAi1PEhQ8jnbJpJZMd29NlhNj4AWYyLOSp2CE/CsHxTCu+r+t0D2yoJudVrd0/8fTVPUVDzY5Tvli75u/g=="
+      crossorigin="anonymous"
+    />
   </head>
+
   <body>
-    <header class="header">
-      <div class="container">
-        <div class="form-wraper">
-          <form class="search-form" id="search-form">
-            <input
-              class="input"
-              type="text"
-              name="searchQuery"
-              autocomplete="off"
-              placeholder="Search images..."
-            />
-            <button class="btn-search" type="submit"></button>
-          </form>
-        </div>
-      </div>
-    </header>
+    <form class="search-form" id="search-form">
+      <input
+        type="text"
+        name="searchQuery"
+        autocomplete="off"
+        placeholder="Search images..."
+        id="searchQuery"
+        autocomplete="off"
+      />
+      <button type="submit" class="submit-btn">Search</button>
+    </form>
     <div class="container">
       <div class="gallery"></div>
-      <button type="button" class="load-more">Load more</button>
+      <button type="button" class="load-more is-hidden">Load more</button>
+      <p class="end-collection-text is-hidden">
+        We're sorry, but you've reached the end of search results.
+      </p>
     </div>
-    <script src="./index.js" type="module"></script>
+
+    <script src="index.js" type="module"></script>
   </body>
 </html>

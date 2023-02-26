@@ -1,95 +1,92 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import { fetchImages } from './fetchImages.js';
-import { createMarkup } from './createMarkup.js';
-import LoadMoreBtn from './LoadMoreBtn.js';
+import { Notify } from 'notiflix';
 
-let pageNumber = 1;
-let perPage = 40;
-let imgQuery = null;
-const form = document.getElementById('search-form');
-const searchBtn = document.querySelector('.btn-search');
-const gallery = document.querySelector('.gallery');
-const input = document.querySelector('.input');
+import './css/common.css';
+import fetchImages from './js/fetchApi';
 
-const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more' });
+const refs = {
+  searchForm: document.querySelector('.search-form'),
+  searchInput: document.querySelector('[type="text"]'),
+  submitBtn: document.querySelector('[type="submit"]'),
+  gallery: document.querySelector('.gallery'),
+  loadMoreBtn: document.querySelector('.load-more'),
+};
 
-form.addEventListener('submit', onSubmitImages);
-loadMoreBtn.button.addEventListener('click', onClickBtnLoadMore);
-input.addEventListener('input', onCleanInput);
+function renderCardImage(arr) {
+  const markup = arr.map(item => cardTemplate(item)).join('');
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
+}
 
-const activeSimplelightbox = new SimpleLightbox('.gallery a');
+let lightbox = new SimpleLightbox('.photo-card a', {
+  captions: true,
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
-function onSubmitImages(evt) {
-  evt.preventDefault();
-  loadMoreBtn.hide();
-  pageNumber = 1;
-  perPage = 40;
-  imgQuery = evt.target.elements.searchQuery.value.trim();
-  cleanMarkup();
-  fetchImages(imgQuery, pageNumber).then(data => {
-    const totalImg = data.data.totalHits;
-    loadMoreBtn.enabled();
-    const {
-      data: { hits },
-    } = data;
+let currentPage = 1;
+let searchQuery = '';
+let currentHits = 0;
 
-    if (!hits.length) {
-      loadMoreBtn.hide();
+refs.searchForm.addEventListener('submit', onSearch);
+
+async function onSearch(e) {
+  e.preventDefault();
+  searchQuery = e.currentTarget.searchQuery.value;
+  currentPage = 1;
+
+  if (searchQuery === '') {
+    return Notiflix.Notify.failure("Sorry, you didn't write anything");
+  }
+  const response = await fetchImages(searchQuery, currentPage);
+  currentHits = response.hits.length;
+
+  if (response.totalHits > 40) {
+    refs.loadMoreBtn.classList.remove('is-hidden');
+  } else {
+    refs.loadMoreBtn.classList.add('is-hidden');
+  }
+
+  try {
+    if (response.totalHits > 0) {
+      Notify.success(`Hooray! We found ${response.totalHits} images.`);
+      refs.gallery.innerHTML = '';
+      renderCardImage(response.hits);
+      lightbox.refresh();
+      endCollectionText.classList.add('is-hidden');
+
+      const { height: cardHeight } = document
+        .querySelector('.gallery')
+        .firstElementChild.getBoundingClientRect();
+
+      window.scrollBy({
+        top: cardHeight * -100,
+        behavior: 'smooth',
+      });
+    }
+
+    if (response.totalHits === 0) {
+      refs.gallery.innerHTML = '';
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-      return;
+      refs.loadMoreBtn.classList.add('is-hidden');
+      refs.endCollectionText.classList.add('is-hidden');
     }
-    gallery.innerHTML = createMarkup(hits);
-
-    loadMoreBtn.show();
-    activeSimplelightbox.refresh();
-    if (totalImg < perPage) {
-      Notify.info(`We're sorry, but you've reached the end of search result`);
-      loadMoreBtn.disabled();
-    } else Notify.success(`Hooray! We found ${totalImg} images.`);
-  });
-}
-
-function onClickBtnLoadMore(evt) {
-  evt.preventDefault();
-  pageNumber += 1;
-  perPage += 40;
-  let number = fetchImages(imgQuery, pageNumber).then(data => {
-    const {
-      data: { hits },
-    } = data;
-    if (data.data.totalHits < perPage) {
-      Notify.info(`We're sorry, but you've reached the end of search results.`);
-      loadMoreBtn.disabled();
-    }
-    gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
-    activeSimplelightbox.refresh();
-    updateScroll();
-  });
-}
-
-function onCleanInput(e) {
-  const text = e.target.value;
-  if (text === '') {
-    cleanMarkup();
-    loadMoreBtn.hide();
+  } catch (error) {
+    console.log(error);
   }
-}
 
-function cleanMarkup() {
-  gallery.innerHTML = '';
-}
+  refs.loadMoreBtn.addEventListener('click', onClickLoadMoreBtn);
+  async function onClickLoadMoreBtn() {
+    currentPage += 1;
+    const response = await fetchImages(searchQuery, currentPage);
+    renderCardImage(response.hits);
+    lightbox.refresh();
+    currentHits += response.hits.length;
 
-function updateScroll() {
-  const { height: cardHeight } = document
-    .querySelector('.photo-card')
-    .getBoundingClientRect();
-
-  return window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
+    if (currentHits === response.totalHits) {
+      refs.loadMoreBtn.classList.add('is-hidden');
+      refs.endCollectionText.classList.remove('is-hidden');
+    }
+  }
 }
